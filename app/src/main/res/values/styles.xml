@@ -8,4 +8,24 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <style name="ListNameStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black_1</item>
+        <item name="android:fontFamily">@font/lato_bold</item>
+        <item name="android:textSize">@dimen/list_name_text_size</item>
+        <item name="lineHeight">@dimen/list_name_line_height</item>
+
+    </style>
+
+    <style name="UsernameStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+        <item name="android:textColor">@color/grey_1</item>
+        <item name="android:textSize">@dimen/list_name_text_size</item>
+        <item name="lineHeight">@dimen/list_name_line_height</item>
+
+    </style>
+
+
 </resources>
