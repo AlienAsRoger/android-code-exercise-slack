@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-allopen'
 
 android {
     compileSdkVersion 29
@@ -40,10 +41,18 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:${versions.dagger}"
     implementation "com.google.dagger:dagger-android-support:${versions.dagger}"
 
+    // Mockito
+    testImplementation "org.mockito:mockito-core:3.0.0"
+
     testImplementation "junit:junit:${versions.junit}"
     androidTestImplementation "androidx.test.ext:junit:${versions.androidxJunit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
 
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+}
+
+allOpen {
+    // allows mocking for classes w/o directly opening them for release builds
+    annotation 'com.slack.exercise.OpenClass'
 }

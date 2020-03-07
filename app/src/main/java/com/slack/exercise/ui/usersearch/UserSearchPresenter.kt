@@ -11,7 +11,8 @@ import javax.inject.Inject
  * Presenter responsible for reacting to user inputs and initiating search queries.
  */
 class UserSearchPresenter @Inject constructor(
-        private val userNameResultDataProvider: UserSearchResultDataProvider
+        private val userNameResultDataProvider: UserSearchResultDataProvider,
+        private val userSearchController: UserSearchController
 ) : UserSearchContract.Presenter {
 
     private var view: UserSearchContract.View? = null
@@ -42,6 +43,8 @@ class UserSearchPresenter @Inject constructor(
     }
 
     override fun onQueryTextChange(searchTerm: String) {
-        searchQuerySubject.onNext(searchTerm)
+        if (userSearchController.isSafeSearch(searchTerm)) {
+            searchQuerySubject.onNext(searchTerm)
+        }
     }
 }

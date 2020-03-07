@@ -28,6 +28,7 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
     @Inject
     internal lateinit var presenter: UserSearchPresenter
+
     @Inject
     lateinit var imageLoader: ImageLoader
 
@@ -95,9 +96,10 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
             }
             this.layoutManager = layoutManager
             setHasFixedSize(true)
-            val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
-            dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context, R.drawable.list_divider)!!)
-            addItemDecoration(dividerItemDecoration)
+
+            addItemDecoration(DividerItemDecoration(context, layoutManager.orientation).apply {
+                setDrawable(ContextCompat.getDrawable(context, R.drawable.list_divider)!!)
+            })
         }
     }
 }
