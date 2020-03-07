@@ -1,4 +1,4 @@
-package com.slack.exercise.api.image.picasso
+package com.slack.exercise.image.picasso
 
 import android.graphics.*
 import com.squareup.picasso.Transformation

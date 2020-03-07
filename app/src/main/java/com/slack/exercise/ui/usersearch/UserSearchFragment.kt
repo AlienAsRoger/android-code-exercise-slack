@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.slack.exercise.R
-import com.slack.exercise.api.image.ImageLoader
+import com.slack.exercise.image.ImageLoader
 import com.slack.exercise.model.UserSearchResult
 import dagger.android.support.DaggerFragment
 import kotterknife.bindView

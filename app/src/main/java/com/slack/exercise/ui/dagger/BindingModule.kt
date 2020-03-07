@@ -1,7 +1,7 @@
 package com.slack.exercise.ui.dagger
 
-import com.slack.exercise.api.image.ImageLoader
-import com.slack.exercise.api.image.picasso.PicassoImageLoader
+import com.slack.exercise.image.ImageLoader
+import com.slack.exercise.image.picasso.PicassoImageLoader
 import com.slack.exercise.ui.usersearch.UserSearchActivity
 import com.slack.exercise.ui.usersearch.UserSearchFragment
 import dagger.Binds

@@ -1,4 +1,4 @@
-package com.slack.exercise.api.image
+package com.slack.exercise.image
 
 import android.widget.ImageView
 

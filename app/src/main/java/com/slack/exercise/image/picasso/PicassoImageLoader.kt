@@ -1,8 +1,8 @@
-package com.slack.exercise.api.image.picasso
+package com.slack.exercise.image.picasso
 
 import android.widget.ImageView
 import com.slack.exercise.R
-import com.slack.exercise.api.image.ImageLoader
+import com.slack.exercise.image.ImageLoader
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
