@@ -3,13 +3,14 @@
     <dimen name="toolbar_height">48dp</dimen>
     <dimen name="item_margin">16dp</dimen>
     <dimen name="avatar_size">28dp</dimen>
+    <dimen name="avatar_corner_radius">4dp</dimen>
     <dimen name="user_search_padding_top">8dp</dimen>
     <dimen name="user_search_padding_side">16dp</dimen>
 
-    <dimen name="list_name_text_size">16sp</dimen>
-    <dimen name="list_name_line_height">28sp</dimen>
-    <dimen name="list_name_padding_start">12dp</dimen>
-    <dimen name="list_name_padding_end">8dp</dimen>
-    <dimen name="list_user_search_height">44dp</dimen>
+    <dimen name="display_name_text_size">16sp</dimen>
+    <dimen name="display_name_line_height">28sp</dimen>
+    <dimen name="display_name_padding_start">12dp</dimen>
+    <dimen name="display_name_padding_end">8dp</dimen>
+    <dimen name="display_user_search_height">44dp</dimen>
 
 </resources>

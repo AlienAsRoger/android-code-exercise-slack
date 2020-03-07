@@ -10,3 +10,13 @@ data class User(val username: String,
                 val displayName: String,
                 @SerializedName("avatar_url")
                 val avatarUrl: String)
+
+/*
+ {
+      "avatar_url": "https://randomuser.me/api/portraits/women/52.jpg",
+      "display_name": "Brooklyn Huffman",
+      "id": 1,
+      "username": "bhuffman"
+    },
+
+ */

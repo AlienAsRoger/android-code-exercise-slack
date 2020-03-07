@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.slack.exercise.R
+import com.slack.exercise.api.image.ImageLoader
 import com.slack.exercise.model.UserSearchResult
 import dagger.android.support.DaggerFragment
 import kotterknife.bindView
@@ -27,6 +28,8 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
     @Inject
     internal lateinit var presenter: UserSearchPresenter
+    @Inject
+    lateinit var imageLoader: ImageLoader
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -86,7 +89,7 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
     private fun setUpList() {
         with(userSearchResultList) {
-            adapter = UserSearchAdapter()
+            adapter = UserSearchAdapter(imageLoader, activity!!)
             val layoutManager = LinearLayoutManager(activity).apply {
                 orientation = LinearLayoutManager.VERTICAL
             }

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_user_search_height"
+    android:layout_height="@dimen/display_user_search_height"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingStart="@dimen/user_search_padding_side"
@@ -15,16 +15,18 @@
         android:id="@+id/userAvatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
-        android:layout_marginEnd="@dimen/list_name_padding_start"
+        android:layout_marginEnd="@dimen/display_name_padding_start"
         android:contentDescription="@string/profile_image"
         tools:src="@mipmap/ic_launcher" />
 
     <!--Name-->
     <TextView
-        android:id="@+id/name"
-        style="@style/ListNameStyle"
+        android:id="@+id/displayName"
+        style="@style/DisplayNameStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/display_name_padding_end"
+        tools:ignore="RtlSymmetry"
         tools:text="Breese Roche" />
 
     <!--username-->
@@ -33,8 +35,6 @@
         style="@style/UsernameStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/list_name_padding_end"
-        tools:ignore="RtlSymmetry"
         tools:text="broche" />
 
 </LinearLayout>

@@ -1,7 +1,10 @@
 package com.slack.exercise.ui.dagger
 
+import com.slack.exercise.api.image.ImageLoader
+import com.slack.exercise.api.image.picasso.PicassoImageLoader
 import com.slack.exercise.ui.usersearch.UserSearchActivity
 import com.slack.exercise.ui.usersearch.UserSearchFragment
+import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -15,4 +18,8 @@ abstract class BindingModule {
 
     @ContributesAndroidInjector
     abstract fun bindUserSearchFragment(): UserSearchFragment
+
+    @Binds
+    internal abstract fun bindsImageLoader(impl: PicassoImageLoader): ImageLoader
+
 }

@@ -43,4 +43,7 @@ dependencies {
     testImplementation "junit:junit:${versions.junit}"
     androidTestImplementation "androidx.test.ext:junit:${versions.androidxJunit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+
+    // Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
