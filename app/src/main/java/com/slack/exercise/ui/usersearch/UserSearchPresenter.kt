@@ -11,8 +11,8 @@ import javax.inject.Inject
  * Presenter responsible for reacting to user inputs and initiating search queries.
  */
 class UserSearchPresenter @Inject constructor(
-        private val userNameResultDataProvider: UserSearchResultDataProvider,
-        private val userSearchController: UserSearchController
+    private val userNameResultDataProvider: UserSearchResultDataProvider,
+    private val userSearchController: UserSearchController
 ) : UserSearchContract.Presenter {
 
     private var view: UserSearchContract.View? = null
@@ -23,18 +23,23 @@ class UserSearchPresenter @Inject constructor(
         this.view = view
 
         searchQueryDisposable = searchQuerySubject
-                .flatMapSingle { searchTerm ->
-                    if (searchTerm.isEmpty()) {
-                        Single.just(emptySet())
-                    } else {
-                        userNameResultDataProvider.fetchUsers(searchTerm)
-                    }
+            .flatMapSingle { searchTerm ->
+                if (searchTerm.isEmpty()) {
+                    Single.just(emptySet())
+                } else {
+                    userNameResultDataProvider.fetchUsers(searchTerm)
                 }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { results -> this@UserSearchPresenter.view?.onUserSearchResults(results) },
-                        { error -> this@UserSearchPresenter.view?.onUserSearchError(error) }
-                )
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { results ->
+                    if (results.isEmpty()) {
+                        userSearchController.restrictLastSearch()
+                    }
+                    this@UserSearchPresenter.view?.onUserSearchResults(results)
+                },
+                { error -> this@UserSearchPresenter.view?.onUserSearchError(error) }
+            )
     }
 
     override fun detach() {
@@ -43,8 +48,10 @@ class UserSearchPresenter @Inject constructor(
     }
 
     override fun onQueryTextChange(searchTerm: String) {
-        if (userSearchController.isSafeSearch(searchTerm)) {
+        if (userSearchController.shouldStartSearch(searchTerm)) {
             searchQuerySubject.onNext(searchTerm)
+        } else { // we don't expect search request, so clear results
+            view?.onUserSearchResults(emptySet())
         }
     }
 }

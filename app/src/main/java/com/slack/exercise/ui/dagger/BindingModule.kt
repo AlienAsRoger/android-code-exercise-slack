@@ -1,6 +1,8 @@
 package com.slack.exercise.ui.dagger
 
 import com.slack.exercise.dataprovider.RawDataProvider
+import com.slack.exercise.dataprovider.SearchRepository
+import com.slack.exercise.dataprovider.SearchRepositoryImpl
 import com.slack.exercise.image.ImageLoader
 import com.slack.exercise.image.picasso.PicassoImageLoader
 import com.slack.exercise.ui.usersearch.UserSearchActivity
@@ -39,5 +41,11 @@ object SearchModule {
     @Provides
     fun provideRawDataProvider(fragment: UserSearchFragment): RawDataProvider {
         return RawDataProvider(fragment.activity!!)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideSearchRepositoryImpl(fragment: UserSearchFragment): SearchRepository {
+        return SearchRepositoryImpl(fragment.activity!!)
     }
 }
