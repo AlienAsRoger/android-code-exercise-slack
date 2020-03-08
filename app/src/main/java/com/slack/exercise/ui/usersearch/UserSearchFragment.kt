@@ -2,16 +2,18 @@ package com.slack.exercise.ui.usersearch
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.paulrybitskyi.persistentsearchview.utils.VoiceRecognitionDelegate
 import com.slack.exercise.R
 import com.slack.exercise.image.ImageLoader
 import com.slack.exercise.model.UserSearchResult
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.fragment_user_search.*
 import kotterknife.bindView
 import timber.log.Timber
 import javax.inject.Inject
@@ -60,18 +62,23 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_user_search, menu)
 
-        val searchView: SearchView = menu.findItem(R.id.search_menu_item).actionView as SearchView
-        searchView.queryHint = getString(R.string.search_users_hint)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return true
+        with(persistentSearchView) {
+            setOnLeftBtnClickListener {
+                activity?.finish()
+            }
+            setQueryInputHint(getString(R.string.search_users_hint))
+            setQueryTextTypeface(ResourcesCompat.getFont(activity!!, R.font.lato_regular)!!)
+            setSuggestionTextTypeface(ResourcesCompat.getFont(activity!!, R.font.lato_regular)!!)
+
+            // Setting a delegate for the voice recognition input. Result will be delivered in Activity first
+            setVoiceRecognitionDelegate(VoiceRecognitionDelegate(activity!!))
+
+            setOnSearchQueryChangeListener { _, _, newQuery ->
+                presenter.onQueryTextChange(newQuery)
             }
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                presenter.onQueryTextChange(newText)
-                return true
-            }
-        })
+            setSuggestionsDisabled(true)
+        }
     }
 
     override fun onUserSearchResults(results: Set<UserSearchResult>) {
@@ -86,6 +93,11 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     private fun setUpToolbar() {
         val act = activity as UserSearchActivity
         act.setSupportActionBar(toolbar)
+        act.supportActionBar?.let {
+            it.setDisplayShowTitleEnabled(false)
+            it.setDisplayHomeAsUpEnabled(false)
+            it.setDisplayShowHomeEnabled(false)
+        }
     }
 
     private fun setUpList() {

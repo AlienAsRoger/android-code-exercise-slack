@@ -15,7 +15,10 @@ buildscript {
             okhttp          : '4.2.1',
             junit           : '4.12',
             androidxJunit   : '1.1.1',
-            espresso        : '3.2.0'
+            espresso        : '3.2.0',
+            picasso         : '2.71828',
+            mockito         : '3.0.0',
+            psvVersion      : '1.1.2'
     ]
     repositories {
         google()

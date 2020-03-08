@@ -42,14 +42,18 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:${versions.dagger}"
 
     // Mockito
-    testImplementation "org.mockito:mockito-core:3.0.0"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
 
     testImplementation "junit:junit:${versions.junit}"
     androidTestImplementation "androidx.test.ext:junit:${versions.androidxJunit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
 
     // Picasso
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation "com.squareup.picasso:picasso:${versions.picasso}"
+
+    // Material SearchView
+    implementation "com.paulrybitskyi.persistentsearchview:persistentsearchview:${versions.psvVersion}"
+
 }
 
 allOpen {
