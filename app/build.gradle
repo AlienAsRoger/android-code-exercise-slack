@@ -45,6 +45,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
 
     testImplementation "junit:junit:${versions.junit}"
+    androidTestImplementation "androidx.test:rules:${versions.testRules}"
     androidTestImplementation "androidx.test.ext:junit:${versions.androidxJunit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
     implementation "androidx.test.espresso:espresso-idling-resource:${versions.espresso}"
@@ -54,8 +55,6 @@ dependencies {
 
     // Material SearchView
     implementation "com.paulrybitskyi.persistentsearchview:persistentsearchview:${versions.psvVersion}"
-    androidTestImplementation 'androidx.test:rules:1.3.0-alpha04'
-
 }
 
 allOpen {

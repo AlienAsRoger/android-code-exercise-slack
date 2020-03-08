@@ -2,7 +2,6 @@ package com.slack.exercise.ui.usersearch
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -25,11 +24,10 @@ import javax.inject.Inject
  */
 class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
-    private val toolbar: Toolbar by bindView(R.id.toolbar)
     private val userSearchResultList: RecyclerView by bindView(R.id.user_search_result_list)
 
     @Inject
-    internal lateinit var presenter: UserSearchPresenter
+    internal lateinit var presenter: UserSearchContract.Presenter
 
     @Inject
     lateinit var imageLoader: ImageLoader
