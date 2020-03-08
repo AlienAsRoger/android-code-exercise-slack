@@ -2,7 +2,7 @@ package com.slack.exercise.dataprovider
 
 import android.content.Context
 import android.content.res.Resources
-import com.slack.exercise.OpenClass
+import com.slack.exercise.utils.OpenClass
 import com.slack.exercise.R
 import timber.log.Timber
 import java.io.InputStream

@@ -1,6 +1,7 @@
 package com.slack.exercise.ui.usersearch
 
 import com.slack.exercise.dataprovider.UserSearchResultDataProvider
+import com.slack.exercise.utils.EspressoIdlingResources
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposables
@@ -36,6 +37,7 @@ class UserSearchPresenter @Inject constructor(
                     if (results.isEmpty()) {
                         userSearchController.restrictLastSearch()
                     }
+                    EspressoIdlingResources.decrementSearchResource()
                     this@UserSearchPresenter.view?.onUserSearchResults(results)
                 },
                 { error -> this@UserSearchPresenter.view?.onUserSearchError(error) }
@@ -49,6 +51,7 @@ class UserSearchPresenter @Inject constructor(
 
     override fun onQueryTextChange(searchTerm: String) {
         if (userSearchController.shouldStartSearch(searchTerm)) {
+            EspressoIdlingResources.incrementSearchResource()
             searchQuerySubject.onNext(searchTerm)
         } else { // we don't expect search request, so clear results
             view?.onUserSearchResults(emptySet())

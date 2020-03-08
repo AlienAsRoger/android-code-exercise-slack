@@ -47,16 +47,18 @@ dependencies {
     testImplementation "junit:junit:${versions.junit}"
     androidTestImplementation "androidx.test.ext:junit:${versions.androidxJunit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+    implementation "androidx.test.espresso:espresso-idling-resource:${versions.espresso}"
 
     // Picasso
     implementation "com.squareup.picasso:picasso:${versions.picasso}"
 
     // Material SearchView
     implementation "com.paulrybitskyi.persistentsearchview:persistentsearchview:${versions.psvVersion}"
+    androidTestImplementation 'androidx.test:rules:1.3.0-alpha04'
 
 }
 
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
-    annotation 'com.slack.exercise.OpenClass'
+    annotation 'com.slack.exercise.utils.OpenClass'
 }

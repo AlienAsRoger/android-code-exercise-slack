@@ -1,4 +1,4 @@
-package com.slack.exercise
+package com.slack.exercise.utils
 
 /**
  * This annotation allows us to open some classes for mocking purposes while they are final in
