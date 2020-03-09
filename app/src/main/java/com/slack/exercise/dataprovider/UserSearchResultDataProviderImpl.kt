@@ -1,9 +1,18 @@
 package com.slack.exercise.dataprovider
 
+import android.util.Log
 import com.slack.exercise.api.SlackApi
+import com.slack.exercise.api.User
+import com.slack.exercise.db.UserDao
 import com.slack.exercise.model.UserSearchResult
 import com.slack.exercise.model.toSearchResult
-import io.reactivex.Single
+import com.slack.exercise.rx.RxSchedulersProvider
+import com.slack.exercise.utils.EspressoIdlingResources
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposables
+import java.net.UnknownHostException
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,16 +21,85 @@ import javax.inject.Singleton
  */
 @Singleton
 class UserSearchResultDataProviderImpl @Inject constructor(
+    private val rxSchedulersProvider: RxSchedulersProvider,
+    private val userDao: UserDao,
     private val slackApi: SlackApi
 ) : UserSearchResultDataProvider {
 
+    private var dbDisposable = Disposables.disposed()
+    private var searchQueryDisposable = Disposables.disposed()
+
+    private lateinit var usersListener: UserSearchResultListener
+
     /**
-     * Returns a [Single] emitting a set of [UserSearchResult].
+     * This method implementation combines DB and API fetch and return results
      */
-    override fun fetchUsers(searchTerm: String): Single<Set<UserSearchResult>> {
-        return slackApi.searchUsers(searchTerm)
+    override fun fetchUsers(searchTerm: String) {
+        EspressoIdlingResources.incrementSearchResource()
+
+        searchQueryDisposable = Observable.concatArrayEager(getUsersFromDb(searchTerm), getUsersFromApi(searchTerm))
+            .subscribeOn(rxSchedulersProvider.IO)
+            .observeOn(rxSchedulersProvider.main)
+            // Drop DB data if we can fetch item fast enough from the API to avoid UI flickers
+            .debounce(DEBOUNCE_TIME_MS, TimeUnit.MILLISECONDS)
+            .subscribe({
+                EspressoIdlingResources.decrementSearchResource()
+
+                usersListener.onSuccess(it)
+            }, {
+                EspressoIdlingResources.decrementSearchResource()
+
+                if (it is UnknownHostException) {
+                    getUsersFromDb(searchTerm).subscribe({ users ->
+                        usersListener.onSuccess(users)
+                    }, { error ->
+                        usersListener.onFail(error)
+                    })
+                } else {
+                    usersListener.onFail(it)
+                }
+            })
+    }
+
+    override fun setListener(listener: UserSearchResultListener) {
+        usersListener = listener
+    }
+
+    override fun onDetach() {
+        searchQueryDisposable.dispose()
+        dbDisposable.dispose()
+    }
+
+    private fun getUsersFromDb(searchTerm: String): Observable<Set<UserSearchResult>> {
+        val lowerCaseTerm = searchTerm.toLowerCase(Locale.getDefault())
+        return userDao.getAllUsers()
+            .subscribeOn(rxSchedulersProvider.IO)
+            .observeOn(rxSchedulersProvider.main)
+            .toObservable()
             .map {
-                it.map { user -> user.toSearchResult() }.toSet()
+                it.filter { user ->
+                    user.displayName.toLowerCase(Locale.getDefault()).startsWith(lowerCaseTerm)
+                        || user.username.toLowerCase(Locale.getDefault()).startsWith(lowerCaseTerm)
+                }
             }
+            .map { it.map { user -> user.toSearchResult() }.toSet() }
+            .filter { it.isNotEmpty() }
+    }
+
+    private fun getUsersFromApi(searchTerm: String): Observable<Set<UserSearchResult>> {
+        return slackApi.searchUsers(searchTerm).toObservable()
+            .doOnNext {
+                storeUsersInDb(it)
+            }
+            .map { it.map { user -> user.toSearchResult() }.toSet() }
+    }
+
+    private fun storeUsersInDb(users: List<User>) {
+        dbDisposable = Observable.fromCallable { userDao.insertAll(users) }
+            .subscribe{}
+    }
+
+    companion object {
+        private val DEBOUNCE_TIME_MS = TimeUnit.MILLISECONDS.toMillis(400)
     }
 }

@@ -1,6 +1,10 @@
 package com.slack.exercise.ui.usersearch
 
 
+import android.content.Context
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
@@ -8,7 +12,6 @@ import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import com.slack.exercise.R
 import com.slack.exercise.utils.EspressoIdlingResources
@@ -26,7 +29,7 @@ class UserSearchActivityTest {
 
     @Rule
     @JvmField
-    var mActivityTestRule = ActivityTestRule(UserSearchActivity::class.java)
+    var activityTestRule = ActivityTestRule(UserSearchActivity::class.java)
 
     @Before
     fun setUp() {
@@ -38,5 +41,20 @@ class UserSearchActivityTest {
         onView(allOf(withId(R.id.inputEt), isDisplayed())).perform(replaceText("pa"), closeSoftKeyboard())
 
         onView(allOf(withId(R.id.displayName), withText("Payton Jones"))).check(matches(withText("Payton Jones")))
+
+        rotateScreen()
+
+        onView(allOf(withId(R.id.displayName), withText("Payton Jones"))).check(matches(withText("Payton Jones")))
+    }
+
+    private fun rotateScreen() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val orientation = context.resources.configuration.orientation
+
+        activityTestRule.activity.requestedOrientation = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 }

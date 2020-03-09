@@ -50,6 +50,12 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
     implementation "androidx.test.espresso:espresso-idling-resource:${versions.espresso}"
 
+    // Room
+    implementation "androidx.room:room-runtime:${versions.room}"
+    kapt "androidx.room:room-compiler:${versions.room}"
+    implementation "androidx.room:room-rxjava2:${versions.room}"
+    implementation "androidx.room:room-ktx:${versions.room}"
+    
     // Picasso
     implementation "com.squareup.picasso:picasso:${versions.picasso}"
 

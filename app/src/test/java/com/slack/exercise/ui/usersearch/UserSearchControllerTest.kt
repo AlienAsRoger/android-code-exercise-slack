@@ -4,6 +4,7 @@ import com.slack.exercise.TestUtils.BLACKLIST
 import com.slack.exercise.TestUtils.mokk
 import com.slack.exercise.dataprovider.RawDataProvider
 import com.slack.exercise.dataprovider.SearchRepository
+import com.slack.exercise.dataprovider.SearchRepositoryImpl
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -83,17 +84,7 @@ class TestSearchRepository : SearchRepository {
     }
 
     override fun matches(searchTerm: String): Boolean {
-        return searchSet.contains(searchTerm)
-    }
-
-    override fun startsWith(searchTerm: String): Boolean {
-        searchSet.forEach {
-            val result = searchTerm.startsWith(it)
-            if (result) {
-                return true
-            }
-        }
-        return false
+        return SearchRepositoryImpl.matches(searchTerm, searchSet)
     }
 
     override fun addToList(lastSearchTerm: String) {

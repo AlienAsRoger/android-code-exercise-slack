@@ -1,5 +1,6 @@
 package com.slack.exercise.ui.usersearch
 
+import android.os.Bundle
 import com.slack.exercise.model.UserSearchResult
 
 /**
@@ -37,5 +38,15 @@ interface UserSearchContract {
          * Notifies the presenter that the [searchTerm] has changed.
          */
         fun onQueryTextChange(searchTerm: String)
+
+        /**
+         * Notifies a [Presenter] that view has been created
+         */
+        fun onViewCreated(savedInstanceState: Bundle?)
+
+        /**
+         * Notifies a [Presenter] that we need to save instance state
+         */
+        fun onSaveInstanceState(outState: Bundle)
     }
 }

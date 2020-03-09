@@ -41,6 +41,8 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        presenter.onViewCreated(savedInstanceState)
         setUpToolbar()
         setUpList()
     }
@@ -65,6 +67,7 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
                 activity?.finish()
             }
             setQueryInputHint(getString(R.string.search_users_hint))
+            setQueryInputTextColor(ResourcesCompat.getColor(activity!!.resources, R.color.black, activity!!.theme))
             setQueryTextTypeface(ResourcesCompat.getFont(activity!!, R.font.lato_regular)!!)
             setSuggestionTextTypeface(ResourcesCompat.getFont(activity!!, R.font.lato_regular)!!)
 
@@ -77,6 +80,11 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
             setSuggestionsDisabled(true)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        presenter.onSaveInstanceState(outState)
     }
 
     override fun onUserSearchResults(results: Set<UserSearchResult>) {

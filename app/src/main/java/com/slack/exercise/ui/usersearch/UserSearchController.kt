@@ -19,12 +19,15 @@ class UserSearchController @Inject constructor(
     private var lastSearchTerm: String = ""
 
     fun shouldStartSearch(searchTerm: String): Boolean {
+        if (searchTerm.isEmpty()) {
+            return false
+        }
         if (!searchRepository.isInitialized) {
             val blacklist = rawDataProvider.readFromBlacklist() ?: return false
             searchRepository.init(blacklist)
         }
 
-        if (searchRepository.matches(searchTerm) || searchRepository.startsWith(searchTerm)) {
+        if (searchRepository.matches(searchTerm)) {
             return false
         }
         lastSearchTerm = searchTerm

@@ -4,7 +4,7 @@ import com.slack.exercise.TestUtils.BLACKLIST
 import com.slack.exercise.TestUtils.mokk
 import com.slack.exercise.dataprovider.RawDataProvider
 import com.slack.exercise.dataprovider.SearchRepository
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
@@ -42,7 +42,7 @@ class UserSearchControllerMockTest {
     @Test
     fun `should NOT add empty string to last search`() {
         val term = ""
-        assertTrue(controller.shouldStartSearch(term))
+        assertFalse(controller.shouldStartSearch(term))
 
         controller.restrictLastSearch()
 

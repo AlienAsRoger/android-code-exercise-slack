@@ -9,6 +9,5 @@ interface SearchRepository {
 
     fun init(blacklist: String)
     fun matches(searchTerm: String): Boolean
-    fun startsWith(searchTerm: String): Boolean
     fun addToList(lastSearchTerm: String)
 }

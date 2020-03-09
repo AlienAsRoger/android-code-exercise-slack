@@ -37,17 +37,7 @@ class SearchRepositoryImpl(context: Context) : SearchRepository {
     }
 
     override fun matches(searchTerm: String): Boolean {
-        return searchSet.contains(searchTerm)
-    }
-
-    override fun startsWith(searchTerm: String): Boolean {
-        searchSet.forEach {
-            val result = searchTerm.startsWith(it)
-            if (result) {
-                return true
-            }
-        }
-        return false
+        return Companion.matches(searchTerm, searchSet)
     }
 
     override fun addToList(lastSearchTerm: String) {
@@ -64,6 +54,20 @@ class SearchRepositoryImpl(context: Context) : SearchRepository {
         private const val SEARCH_PREF_KEY = "search_pref_key"
         private const val LIST_PREF_KEY = "list_pref_key"
         private const val INIT_PREF_KEY = "init_pref_key"
+
+        fun matches(searchTerm: String, searchSet: Set<String>): Boolean {
+            return searchSet.contains(searchTerm) || startsWith(searchTerm, searchSet)
+        }
+
+        private fun startsWith(searchTerm: String, searchSet: Set<String>): Boolean {
+            searchSet.forEach {
+                val result = searchTerm.startsWith(it)
+                if (result) {
+                    return true
+                }
+            }
+            return false
+        }
     }
 
 }
