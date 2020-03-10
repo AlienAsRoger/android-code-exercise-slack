@@ -1,14 +1,19 @@
 package com.slack.exercise.ui.usersearch
 
 import android.os.Bundle
+import android.view.*
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
-import android.view.*
+import com.google.android.material.snackbar.Snackbar
 import com.slack.exercise.R
+import com.slack.exercise.image.ImageLoader
 import com.slack.exercise.model.UserSearchResult
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.fragment_user_search.*
+import kotlinx.android.synthetic.main.no_results_view.*
+import kotlinx.android.synthetic.main.welcome_view.*
 import kotterknife.bindView
 import timber.log.Timber
 import javax.inject.Inject
@@ -18,11 +23,17 @@ import javax.inject.Inject
  * We use the MVP pattern and attach a Presenter that will be in charge of non view related operations.
  */
 class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
-    private val toolbar: Toolbar by bindView(R.id.toolbar)
+
     private val userSearchResultList: RecyclerView by bindView(R.id.user_search_result_list)
 
     @Inject
-    internal lateinit var presenter: UserSearchPresenter
+    internal lateinit var presenter: UserSearchContract.Presenter
+
+    @Inject
+    lateinit var imageLoader: ImageLoader
+
+    @Inject
+    lateinit var searchViewDelegate: SearchViewDelegate
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -33,6 +44,8 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        presenter.onViewCreated(savedInstanceState)
         setUpToolbar()
         setUpList()
     }
@@ -52,41 +65,80 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_user_search, menu)
 
-        val searchView: SearchView = menu.findItem(R.id.search_menu_item).actionView as SearchView
-        searchView.queryHint = getString(R.string.search_users_hint)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return true
-            }
+        searchViewDelegate.setUpSearchView()
+    }
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                presenter.onQueryTextChange(newText)
-                return true
-            }
-        })
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        presenter.onSaveInstanceState(outState)
     }
 
     override fun onUserSearchResults(results: Set<UserSearchResult>) {
+        userSearchResultList.visibility = View.VISIBLE
+        noResultsView.visibility = View.GONE
+        welcomeView.visibility = View.GONE
+
         val adapter = userSearchResultList.adapter as UserSearchAdapter
         adapter.setResults(results)
     }
 
     override fun onUserSearchError(error: Throwable) {
         Timber.e(error, "Error searching users.")
+        view?.let { Snackbar.make(it, R.string.something_happened, Snackbar.LENGTH_SHORT).show() }
+    }
+
+    override fun showLoadingView(show: Boolean) {
+        searchViewDelegate.showProgressBar(show)
+    }
+
+    override fun showEmptyState() {
+        userSearchResultList.visibility = View.GONE
+        noResultsView.visibility = View.GONE
+        welcomeView.visibility = View.VISIBLE
+    }
+
+    override fun showNoResults() {
+        userSearchResultList.visibility = View.GONE
+        welcomeView.visibility = View.GONE
+        noResultsView.visibility = View.VISIBLE
+
+        noResultsText.text = getString(R.string.no_results)
+    }
+
+    override fun showNoResultsInOffline() {
+        userSearchResultList.visibility = View.GONE
+        welcomeView.visibility = View.GONE
+        noResultsView.visibility = View.VISIBLE
+
+        noResultsText.text = getString(R.string.no_results_offline)
+    }
+
+    override fun showMessageAboutOffline() {
+        view?.let { Snackbar.make(it, R.string.you_are_offline_showing_results, Snackbar.LENGTH_LONG).show() }
     }
 
     private fun setUpToolbar() {
         val act = activity as UserSearchActivity
         act.setSupportActionBar(toolbar)
+        act.supportActionBar?.let {
+            it.setDisplayShowTitleEnabled(false)
+            it.setDisplayHomeAsUpEnabled(false)
+            it.setDisplayShowHomeEnabled(false)
+        }
     }
 
     private fun setUpList() {
         with(userSearchResultList) {
-            adapter = UserSearchAdapter()
-            layoutManager = LinearLayoutManager(activity).apply {
+            adapter = UserSearchAdapter(imageLoader, activity!!)
+            val layoutManager = LinearLayoutManager(activity).apply {
                 orientation = LinearLayoutManager.VERTICAL
             }
+            this.layoutManager = layoutManager
             setHasFixedSize(true)
+
+            addItemDecoration(DividerItemDecoration(context, layoutManager.orientation).apply {
+                setDrawable(ContextCompat.getDrawable(context, R.drawable.list_divider)!!)
+            })
         }
     }
 }

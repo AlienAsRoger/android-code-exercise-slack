@@ -5,6 +5,8 @@ buildscript {
             agp             : '3.5.2',
             kotlin          : '1.3.60',
             recyclerview    : '1.1.0',
+            material        : '1.1.0',
+            constraint      : '2.0.0-beta4',
             appcompat       : '1.1.0',
             dagger          : '2.25.2',
             kotterknife     : '0.1.0-SNAPSHOT',
@@ -15,7 +17,12 @@ buildscript {
             okhttp          : '4.2.1',
             junit           : '4.12',
             androidxJunit   : '1.1.1',
-            espresso        : '3.2.0'
+            espresso        : '3.2.0',
+            testRules       : '1.3.0-alpha04',
+            picasso         : '2.71828',
+            mockito         : '3.0.0',
+            psvVersion      : '1.1.2',
+            room            : '2.2.4'
     ]
     repositories {
         google()
@@ -24,6 +31,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:${versions.agp}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath "org.jetbrains.kotlin:kotlin-allopen:${versions.kotlin}"
     }
 }
 

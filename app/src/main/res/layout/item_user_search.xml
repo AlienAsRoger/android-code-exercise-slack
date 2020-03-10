@@ -1,12 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/item_margin"
-    android:orientation="horizontal">
+    android:layout_height="@dimen/list_item_search_height"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/user_search_padding_side"
+    android:paddingTop="@dimen/user_search_padding_top"
+    android:paddingEnd="@dimen/user_search_padding_side"
+    android:paddingBottom="@dimen/user_search_padding_top">
 
+    <!--Avatar-->
+    <ImageView
+        android:id="@+id/userAvatar"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        android:layout_marginEnd="@dimen/display_name_padding_start"
+        android:contentDescription="@string/profile_image"
+        tools:src="@mipmap/ic_launcher" />
+
+    <!--Name-->
+    <TextView
+        android:id="@+id/displayName"
+        style="@style/DisplayNameStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/display_name_padding_end"
+        tools:ignore="RtlSymmetry"
+        tools:text="Breese Roche" />
+
+    <!--username-->
     <TextView
         android:id="@+id/username"
+        style="@style/UsernameStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="broche" />
+
 </LinearLayout>
