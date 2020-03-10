@@ -9,6 +9,7 @@ import com.slack.exercise.rx.RxSchedulersProvider
 import com.slack.exercise.utils.EspressoIdlingResources
 import com.slack.exercise.utils.ExperimentSettings
 import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.disposables.Disposables
 import java.net.UnknownHostException
 import java.util.*
@@ -55,11 +56,7 @@ class UserSearchResultDataProviderImpl @Inject constructor(
                 EspressoIdlingResources.decrementSearchResource()
 
                 if (it is UnknownHostException) {
-                    getUsersFromDb(searchTerm).subscribe({ users ->
-                        usersListener?.onSuccess(users)
-                    }, { error ->
-                        usersListener?.onFail(error)
-                    })
+                    getOfflineResults(searchTerm)
                 } else {
                     usersListener?.onFail(it)
                 }
@@ -76,6 +73,18 @@ class UserSearchResultDataProviderImpl @Inject constructor(
         usersListener = null
     }
 
+    override fun loadOfflineResults(lastSearchedTerm: String) {
+        dbDisposable = getOfflineResults(lastSearchedTerm)
+    }
+
+    private fun getOfflineResults(searchTerm: String): Disposable {
+        return getUsersFromDb(searchTerm).subscribe({ users ->
+            usersListener?.onSuccess(users)
+        }, { error ->
+            usersListener?.onFail(error)
+        })
+    }
+
     private fun getUsersFromDb(searchTerm: String): Observable<Set<UserSearchResult>> {
         val lowerCaseTerm = searchTerm.toLowerCase(Locale.getDefault())
         return userDao.getAllUsers()
@@ -89,7 +98,6 @@ class UserSearchResultDataProviderImpl @Inject constructor(
                 }
             }
             .map { it.map { user -> user.toSearchResult() }.toSet() }
-            .filter { it.isNotEmpty() }
     }
 
     private fun getUsersFromApi(searchTerm: String): Observable<Set<UserSearchResult>> {

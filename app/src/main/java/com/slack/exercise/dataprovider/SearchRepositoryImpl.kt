@@ -50,10 +50,24 @@ class SearchRepositoryImpl(context: Context) : SearchRepository {
         }
     }
 
+    override fun getLastSearchedTerm(): String? {
+        return sharedPref.getString(LAST_TERM_PREF_KEY, null)
+    }
+
+    override fun setLastSearchedTerm(searchTerm: String) {
+        if (searchTerm.isBlank()) {
+            return
+        }
+        sharedPref.edit().apply {
+            putString(LAST_TERM_PREF_KEY, searchTerm).apply()
+        }
+    }
+
     companion object {
         private const val SEARCH_PREF_KEY = "search_pref_key"
         private const val LIST_PREF_KEY = "list_pref_key"
         private const val INIT_PREF_KEY = "init_pref_key"
+        private const val LAST_TERM_PREF_KEY = "last_term_pref_key"
 
         fun matches(searchTerm: String, searchSet: Set<String>): Boolean {
             return searchSet.contains(searchTerm) || startsWith(searchTerm, searchSet)

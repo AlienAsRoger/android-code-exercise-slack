@@ -14,7 +14,7 @@ import javax.inject.Singleton
  * Component providing Application scoped instances.
  */
 @Singleton
-@Component(modules = [AppModule::class, AndroidInjectionModule::class, BindingModule::class, RoomModule::class])
+@Component(modules = [AppModule::class, AndroidInjectionModule::class, BindingModule::class, OfflineModule::class])
 interface AppComponent : AndroidInjector<DaggerApplication> {
 
     /**

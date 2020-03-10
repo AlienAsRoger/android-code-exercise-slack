@@ -6,4 +6,7 @@
     <string name="welcome_message">Search is ready for you :)</string>
     <string name="something_happened">Something happened… we are working on it already!</string>
     <string name="no_results">Looks like nothing has been found</string>
+    <string name="no_results_offline">Nothing has been found in offline search</string>
+
+    <string name="you_are_offline_showing_results">No connection? No problem! Here is your last results. Offline search is available</string>
 </resources>

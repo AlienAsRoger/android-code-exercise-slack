@@ -1,9 +1,11 @@
 package com.slack.exercise.ui.usersearch
 
 import android.os.Bundle
+import com.slack.exercise.dataprovider.SearchRepository
 import com.slack.exercise.dataprovider.UserSearchResultDataProvider
 import com.slack.exercise.dataprovider.UserSearchResultListener
 import com.slack.exercise.model.UserSearchResult
+import com.slack.exercise.utils.NetworkHelper
 import javax.inject.Inject
 
 /**
@@ -11,7 +13,9 @@ import javax.inject.Inject
  */
 class UserSearchPresenter @Inject constructor(
     private val userNameResultDataProvider: UserSearchResultDataProvider,
-    private val userSearchController: UserSearchController
+    private val userSearchController: UserSearchController,
+    private val networkHelper: NetworkHelper,
+    private val searchRepository: SearchRepository
 ) : UserSearchContract.Presenter, UserSearchResultListener {
 
     /**
@@ -26,6 +30,13 @@ class UserSearchPresenter @Inject constructor(
         this.view = view
 
         userNameResultDataProvider.setListener(this)
+
+        // If user is offline, show last searched results
+        if (!networkHelper.isConnected() && !searchRepository.getLastSearchedTerm().isNullOrEmpty()) {
+            view.showLoadingView(true)
+            userNameResultDataProvider.loadOfflineResults(searchRepository.getLastSearchedTerm()!!)
+            view.showMessageAboutOffline()
+        }
 
         if (!searchResults.isNullOrEmpty()) {
             searchResults?.let { view.onUserSearchResults(it) }
@@ -44,9 +55,16 @@ class UserSearchPresenter @Inject constructor(
 
         searchResults = results
         if (results.isEmpty()) {
-            userSearchController.restrictLastSearch()
-            view?.showNoResults()
+            // Don't restrict last search for offline mode
+            if (networkHelper.isConnected()) {
+                userSearchController.restrictLastSearch()
+                view?.showNoResults()
+            } else {
+                view?.showNoResultsInOffline()
+            }
         } else {
+            searchRepository.setLastSearchedTerm(lastSearchTerm)
+
             view?.onUserSearchResults(results)
         }
     }
@@ -68,6 +86,7 @@ class UserSearchPresenter @Inject constructor(
             view?.showLoadingView(true)
             userNameResultDataProvider.fetchUsers(searchTerm)
         } else { // we don't expect search request, so clear results
+            view?.showLoadingView(false)
             isSearchRequestCanceled = true
             searchResults = emptySet()
 

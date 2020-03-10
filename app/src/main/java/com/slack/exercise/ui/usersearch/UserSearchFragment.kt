@@ -101,6 +101,20 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
         userSearchResultList.visibility = View.GONE
         welcomeView.visibility = View.GONE
         noResultsView.visibility = View.VISIBLE
+
+        noResultsText.text = getString(R.string.no_results)
+    }
+
+    override fun showNoResultsInOffline() {
+        userSearchResultList.visibility = View.GONE
+        welcomeView.visibility = View.GONE
+        noResultsView.visibility = View.VISIBLE
+
+        noResultsText.text = getString(R.string.no_results_offline)
+    }
+
+    override fun showMessageAboutOffline() {
+        view?.let { Snackbar.make(it, R.string.you_are_offline_showing_results, Snackbar.LENGTH_LONG).show() }
     }
 
     private fun setUpToolbar() {

@@ -36,6 +36,16 @@ interface UserSearchContract {
          * Call to indicate that there were no search results returned by API
          */
         fun showNoResults()
+
+        /**
+         * Call to indicate that there were no search results for offline mode
+         */
+        fun showNoResultsInOffline()
+
+        /**
+         * Let user know that we are loading last results for offline usage
+         */
+        fun showMessageAboutOffline()
     }
 
     interface Presenter {

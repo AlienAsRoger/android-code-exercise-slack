@@ -22,4 +22,9 @@ interface UserSearchResultDataProvider {
      * Callback to release resources and stop operations
      */
     fun onDetach()
+
+    /**
+     * Request to load last searched results from local storage
+     */
+    fun loadOfflineResults(lastSearchedTerm: String)
 }

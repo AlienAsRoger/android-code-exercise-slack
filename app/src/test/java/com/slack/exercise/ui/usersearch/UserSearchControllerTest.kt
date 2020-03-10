@@ -69,6 +69,7 @@ class UserSearchControllerTest {
  */
 class TestSearchRepository : SearchRepository {
 
+    private var lastSearchedTerm: String = ""
     private val searchSet = HashSet<String>()
 
     override var isInitialized: Boolean = false
@@ -89,6 +90,14 @@ class TestSearchRepository : SearchRepository {
 
     override fun addToList(lastSearchTerm: String) {
         searchSet.add(lastSearchTerm)
+    }
+
+    override fun getLastSearchedTerm(): String? {
+        return lastSearchedTerm
+    }
+
+    override fun setLastSearchedTerm(searchTerm: String) {
+        lastSearchedTerm = searchTerm
     }
 
 }

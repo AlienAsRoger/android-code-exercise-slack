@@ -7,6 +7,7 @@ import com.slack.exercise.dataprovider.UserSearchResultDataProvider
 import com.slack.exercise.image.ImageLoader
 import com.slack.exercise.image.picasso.PicassoImageLoader
 import com.slack.exercise.ui.usersearch.*
+import com.slack.exercise.utils.NetworkHelper
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -47,8 +48,11 @@ object SearchModule {
     @Provides
     fun provideUserUserSearchPresenter(
         userNameResultDataProvider: UserSearchResultDataProvider,
-        userSearchController: UserSearchController): UserSearchContract.Presenter {
-        return UserSearchPresenter(userNameResultDataProvider, userSearchController)
+        userSearchController: UserSearchController,
+        networkHelper: NetworkHelper,
+        searchRepository: SearchRepository
+    ): UserSearchContract.Presenter {
+        return UserSearchPresenter(userNameResultDataProvider, userSearchController, networkHelper, searchRepository)
     }
 
     @ActivityScope
