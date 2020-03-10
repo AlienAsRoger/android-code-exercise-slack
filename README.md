@@ -1,5 +1,9 @@
 # android-code-exercise
 
+![Screen 1](https://github.com/AlienAsRoger/android-code-exercise/blob/master/device-2020-03-10-092252.png)
+![Screen 2](https://github.com/AlienAsRoger/android-code-exercise/blob/master/device-2020-03-10-092327.png)
+![Screen 3](https://github.com/AlienAsRoger/android-code-exercise/blob/master/device-2020-03-10-092349.png)
+
 Libraries added:
 
             material        : '1.1.0',
