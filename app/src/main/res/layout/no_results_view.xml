@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/noResultsView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <!--Icon-->
+    <ImageView
+        android:id="@+id/searchImgView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/welcome_logo"
+        android:src="@drawable/ic_search"
+        android:tint="@color/light_grey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <!--Text label-->
+    <TextView
+        style="@style/NoResultsStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/no_results_text_padding"
+        android:text="@string/no_results"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchImgView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

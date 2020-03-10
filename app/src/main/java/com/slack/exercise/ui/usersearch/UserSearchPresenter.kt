@@ -14,6 +14,10 @@ class UserSearchPresenter @Inject constructor(
     private val userSearchController: UserSearchController
 ) : UserSearchContract.Presenter, UserSearchResultListener {
 
+    /**
+     * This flag avoid receiving results when user quickly erase full query, but previous requests are still coming.
+     */
+    private var isSearchRequestCanceled: Boolean = false
     private var lastSearchTerm: String = ""
     private var searchResults: Set<UserSearchResult>? = null
     private var view: UserSearchContract.View? = null
@@ -23,15 +27,28 @@ class UserSearchPresenter @Inject constructor(
 
         userNameResultDataProvider.setListener(this)
 
-        searchResults?.let { view.onUserSearchResults(it) }
+        if (!searchResults.isNullOrEmpty()) {
+            searchResults?.let { view.onUserSearchResults(it) }
+        } else if (lastSearchTerm.isEmpty()) {
+            view.showEmptyState()
+        } else {
+            view.showNoResults()
+        }
     }
 
     override fun onSuccess(results: Set<UserSearchResult>) {
+        view?.showLoadingView(false)
+        if (isSearchRequestCanceled) {
+            return
+        }
+
         searchResults = results
         if (results.isEmpty()) {
             userSearchController.restrictLastSearch()
+            view?.showNoResults()
+        } else {
+            view?.onUserSearchResults(results)
         }
-        view?.onUserSearchResults(results)
     }
 
     override fun onFail(error: Throwable) {
@@ -44,12 +61,21 @@ class UserSearchPresenter @Inject constructor(
     }
 
     override fun onQueryTextChange(searchTerm: String) {
+        isSearchRequestCanceled = false
         lastSearchTerm = searchTerm
+
         if (userSearchController.shouldStartSearch(searchTerm)) {
+            view?.showLoadingView(true)
             userNameResultDataProvider.fetchUsers(searchTerm)
         } else { // we don't expect search request, so clear results
+            isSearchRequestCanceled = true
             searchResults = emptySet()
-            view?.onUserSearchResults(emptySet())
+
+            if (lastSearchTerm.isEmpty()) {
+                view?.showEmptyState()
+            } else {
+                view?.showNoResults()
+            }
         }
     }
 

@@ -20,6 +20,7 @@ class UserSearchController @Inject constructor(
 
     fun shouldStartSearch(searchTerm: String): Boolean {
         if (searchTerm.isEmpty()) {
+            lastSearchTerm = searchTerm
             return false
         }
         if (!searchRepository.isInitialized) {

@@ -37,14 +37,14 @@ class UserSearchActivityTest {
     }
 
     @Test
-    fun userSearchActivityTest() {
+    fun should_Find_User_And_Survive_Rotation() {
         onView(allOf(withId(R.id.inputEt), isDisplayed())).perform(replaceText("pa"), closeSoftKeyboard())
 
-        onView(allOf(withId(R.id.displayName), withText("Payton Jones"))).check(matches(withText("Payton Jones")))
+        onView(allOf(withId(R.id.displayName), withText(TEST_USER))).check(matches(withText(TEST_USER)))
 
         rotateScreen()
 
-        onView(allOf(withId(R.id.displayName), withText("Payton Jones"))).check(matches(withText("Payton Jones")))
+        onView(allOf(withId(R.id.displayName), withText(TEST_USER))).check(matches(withText(TEST_USER)))
     }
 
     private fun rotateScreen() {
@@ -56,5 +56,9 @@ class UserSearchActivityTest {
         } else {
             ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
+    }
+
+    companion object {
+        private const val TEST_USER = "Payton Jones"
     }
 }

@@ -3,20 +3,20 @@ package com.slack.exercise.ui.usersearch
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.paulrybitskyi.persistentsearchview.utils.VoiceRecognitionDelegate
+import com.google.android.material.snackbar.Snackbar
 import com.slack.exercise.R
 import com.slack.exercise.image.ImageLoader
 import com.slack.exercise.model.UserSearchResult
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_user_search.*
+import kotlinx.android.synthetic.main.no_results_view.*
+import kotlinx.android.synthetic.main.welcome_view.*
 import kotterknife.bindView
 import timber.log.Timber
 import javax.inject.Inject
-
 
 /**
  * Main fragment displaying and handling interactions with the view.
@@ -31,6 +31,9 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
     @Inject
     lateinit var imageLoader: ImageLoader
+
+    @Inject
+    lateinit var searchViewDelegate: SearchViewDelegate
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -62,24 +65,7 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_user_search, menu)
 
-        with(persistentSearchView) {
-            setOnLeftBtnClickListener {
-                activity?.finish()
-            }
-            setQueryInputHint(getString(R.string.search_users_hint))
-            setQueryInputTextColor(ResourcesCompat.getColor(activity!!.resources, R.color.black, activity!!.theme))
-            setQueryTextTypeface(ResourcesCompat.getFont(activity!!, R.font.lato_regular)!!)
-            setSuggestionTextTypeface(ResourcesCompat.getFont(activity!!, R.font.lato_regular)!!)
-
-            // Setting a delegate for the voice recognition input. Result will be delivered in Activity first
-            setVoiceRecognitionDelegate(VoiceRecognitionDelegate(activity!!))
-
-            setOnSearchQueryChangeListener { _, _, newQuery ->
-                presenter.onQueryTextChange(newQuery)
-            }
-
-            setSuggestionsDisabled(true)
-        }
+        searchViewDelegate.setUpSearchView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -88,12 +74,33 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     }
 
     override fun onUserSearchResults(results: Set<UserSearchResult>) {
+        userSearchResultList.visibility = View.VISIBLE
+        noResultsView.visibility = View.GONE
+        welcomeView.visibility = View.GONE
+
         val adapter = userSearchResultList.adapter as UserSearchAdapter
         adapter.setResults(results)
     }
 
     override fun onUserSearchError(error: Throwable) {
         Timber.e(error, "Error searching users.")
+        view?.let { Snackbar.make(it, R.string.something_happened, Snackbar.LENGTH_SHORT).show() }
+    }
+
+    override fun showLoadingView(show: Boolean) {
+        searchViewDelegate.showProgressBar(show)
+    }
+
+    override fun showEmptyState() {
+        userSearchResultList.visibility = View.GONE
+        noResultsView.visibility = View.GONE
+        welcomeView.visibility = View.VISIBLE
+    }
+
+    override fun showNoResults() {
+        userSearchResultList.visibility = View.GONE
+        welcomeView.visibility = View.GONE
+        noResultsView.visibility = View.VISIBLE
     }
 
     private fun setUpToolbar() {

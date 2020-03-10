@@ -9,19 +9,29 @@
     </style>
 
     <style name="DisplayNameStyle" parent="TextAppearance.AppCompat">
-        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:fontFamily">@font/lato_bold</item>
-        <item name="android:textSize">@dimen/display_name_text_size</item>
-        <item name="lineHeight">@dimen/display_name_line_height</item>
+        <item name="android:textSize">@dimen/list_item_text_size</item>
+        <item name="lineHeight">@dimen/list_item_line_height</item>
     </style>
 
     <style name="UsernameStyle" parent="TextAppearance.AppCompat">
-        <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/lato_regular</item>
         <item name="android:textColor">@color/grey</item>
-        <item name="android:textSize">@dimen/display_name_text_size</item>
-        <item name="lineHeight">@dimen/display_name_line_height</item>
+        <item name="android:textSize">@dimen/list_item_text_size</item>
+        <item name="lineHeight">@dimen/list_item_line_height</item>
+    </style>
+
+    <style name="WelcomeTextStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/light_grey</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+        <item name="android:textSize">@dimen/welcome_text_size</item>
+    </style>
+
+    <style name="NoResultsStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/light_grey</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+        <item name="android:textSize">@dimen/no_results_text_size</item>
     </style>
 
 

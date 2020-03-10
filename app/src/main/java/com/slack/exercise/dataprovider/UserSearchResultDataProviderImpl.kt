@@ -1,6 +1,5 @@
 package com.slack.exercise.dataprovider
 
-import android.util.Log
 import com.slack.exercise.api.SlackApi
 import com.slack.exercise.api.User
 import com.slack.exercise.db.UserDao
@@ -8,6 +7,7 @@ import com.slack.exercise.model.UserSearchResult
 import com.slack.exercise.model.toSearchResult
 import com.slack.exercise.rx.RxSchedulersProvider
 import com.slack.exercise.utils.EspressoIdlingResources
+import com.slack.exercise.utils.ExperimentSettings
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposables
 import java.net.UnknownHostException
@@ -29,7 +29,7 @@ class UserSearchResultDataProviderImpl @Inject constructor(
     private var dbDisposable = Disposables.disposed()
     private var searchQueryDisposable = Disposables.disposed()
 
-    private lateinit var usersListener: UserSearchResultListener
+    private var usersListener: UserSearchResultListener? = null
 
     /**
      * This method implementation combines DB and API fetch and return results
@@ -37,7 +37,12 @@ class UserSearchResultDataProviderImpl @Inject constructor(
     override fun fetchUsers(searchTerm: String) {
         EspressoIdlingResources.incrementSearchResource()
 
-        searchQueryDisposable = Observable.concatArrayEager(getUsersFromDb(searchTerm), getUsersFromApi(searchTerm))
+        @Suppress("ConstantConditionIf")
+        searchQueryDisposable = if (ExperimentSettings.isDbLoadEnabled) {
+            Observable.concatArrayEager(getUsersFromDb(searchTerm), getUsersFromApi(searchTerm))
+        } else {
+            Observable.concatArrayEager(getUsersFromApi(searchTerm))
+        }
             .subscribeOn(rxSchedulersProvider.IO)
             .observeOn(rxSchedulersProvider.main)
             // Drop DB data if we can fetch item fast enough from the API to avoid UI flickers
@@ -45,18 +50,18 @@ class UserSearchResultDataProviderImpl @Inject constructor(
             .subscribe({
                 EspressoIdlingResources.decrementSearchResource()
 
-                usersListener.onSuccess(it)
+                usersListener?.onSuccess(it)
             }, {
                 EspressoIdlingResources.decrementSearchResource()
 
                 if (it is UnknownHostException) {
                     getUsersFromDb(searchTerm).subscribe({ users ->
-                        usersListener.onSuccess(users)
+                        usersListener?.onSuccess(users)
                     }, { error ->
-                        usersListener.onFail(error)
+                        usersListener?.onFail(error)
                     })
                 } else {
-                    usersListener.onFail(it)
+                    usersListener?.onFail(it)
                 }
             })
     }
@@ -68,6 +73,7 @@ class UserSearchResultDataProviderImpl @Inject constructor(
     override fun onDetach() {
         searchQueryDisposable.dispose()
         dbDisposable.dispose()
+        usersListener = null
     }
 
     private fun getUsersFromDb(searchTerm: String): Observable<Set<UserSearchResult>> {
@@ -96,7 +102,7 @@ class UserSearchResultDataProviderImpl @Inject constructor(
 
     private fun storeUsersInDb(users: List<User>) {
         dbDisposable = Observable.fromCallable { userDao.insertAll(users) }
-            .subscribe{}
+            .subscribe {}
     }
 
     companion object {

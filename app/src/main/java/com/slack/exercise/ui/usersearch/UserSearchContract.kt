@@ -21,6 +21,21 @@ interface UserSearchContract {
          * Call when an error occurs during the execution of search queries.
          */
         fun onUserSearchError(error: Throwable)
+
+        /**
+         * Call when we are in loading state
+         */
+        fun showLoadingView(show: Boolean)
+
+        /**
+         * Call when we want to show empty state
+         */
+        fun showEmptyState()
+
+        /**
+         * Call to indicate that there were no search results returned by API
+         */
+        fun showNoResults()
     }
 
     interface Presenter {
